@@ -522,7 +522,7 @@ prefect deployment run 'ai_tools_ingest_flow/production' --param enable_rss=true
 1. Go to [vercel.com](https://vercel.com) → **Add New** → **Project** → Import your `agents-tool-rag` repo.  
 2. Set **Root Directory** to `frontend` (the React app lives there).  
 3. Add **Environment Variables** in Vercel: `VITE_BACKEND_URL` = your FastAPI URL (e.g. Cloud Run), `VITE_API_KEY` = your backend API key.  
-4. Deploy. Then add your Vercel URL to the backend **ALLOWED_ORIGINS** and redeploy the backend so CORS allows the frontend.
+4. Deploy. Then add **https://agents-tool-rag.vercel.app** to the backend **ALLOWED_ORIGINS** and redeploy the backend so CORS allows the frontend.
 
 ---
 

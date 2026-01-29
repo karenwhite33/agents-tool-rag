@@ -109,7 +109,7 @@ AUTH_REQUIRED=true  # Set to "false" to disable (NOT RECOMMENDED)
 ENVIRONMENT=production  # "development" or "production"
 
 # CORS
-ALLOWED_ORIGINS=http://localhost:5173,https://your-frontend-domain.com
+ALLOWED_ORIGINS=http://localhost:7860,http://localhost:5173,https://agents-tool-rag.vercel.app
 
 # Rate Limiting
 RATE_LIMIT_PER_MINUTE=60
