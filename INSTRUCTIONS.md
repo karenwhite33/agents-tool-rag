@@ -1,4 +1,4 @@
-# Substack Articles Search Engine
+# 🤖 AI Agent Tools RAG Search Engine
 
 ![Gradio UI](static/gradio_app.png)
 
@@ -6,10 +6,10 @@
 
 <!-- Project Status -->
 
-[![Build Status](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/ci.yml/badge.svg)](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/ci.yml)
-[![Build Status](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/cd.yml/badge.svg)](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/cd.yml)
+[![Build Status](https://github.com/karenwhite33/agents-tool-rag/actions/workflows/ci.yml/badge.svg)](https://github.com/karenwhite33/agents-tool-rag/actions/workflows/ci.yml)
+[![Build Status](https://github.com/karenwhite33/agents-tool-rag/actions/workflows/cd.yml/badge.svg)](https://github.com/karenwhite33/agents-tool-rag/actions/workflows/cd.yml)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/benitomartin/substack-newsletters-search-course)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/karenwhite33/agents-tool-rag)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python version](https://img.shields.io/badge/python-3.12.8-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
@@ -26,12 +26,12 @@
 </div>
 
 <p align="center">
-  <em>A RAG application for searching articles and getting answers on relevant topics from your favorite Substack newsletters</em>
+  <em>A comprehensive RAG-powered search engine for discovering AI agent frameworks, libraries, and tools from RSS feeds, GitHub repositories, and documentation sites</em>
 </p>
 
 ## 📚 Table of Contents
 
-- [Substack Articles Search Engine](#substack-articles-search-engine)
+- [AI Agent Tools Search Engine](#ai-agent-tools-search-engine)
   - [📚 Table of Contents](#-table-of-contents)
   - [✨ Overview](#-overview)
   - [🗂️ Project Structure](#️-project-structure)
@@ -56,7 +56,7 @@
 
 ## ✨ Overview
 
-This project is a robust Retrieval-Augmented Generation (RAG) system designed to make Substack newsletter content easily searchable and accessible. It automates the ingestion of articles from a curated list of Substack newsletters, leveraging their RSS feeds. Articles are stored in a Supabase PostgreSQL database, while their semantic embeddings are generated and indexed in a Qdrant vector database for efficient similarity search.
+This project is a robust Retrieval-Augmented Generation (RAG) system designed to make AI agent tools, frameworks, and libraries easily searchable and accessible. It automates the ingestion of content from RSS feeds, GitHub repositories, and documentation sites. Content is stored in a Supabase PostgreSQL database, while semantic embeddings are generated and indexed in a Qdrant vector database for efficient similarity search.
 
 The data pipeline is orchestrated using Prefect, enabling scheduled, reliable, and reproducible ingestion and embedding workflows. Prefect ensures that new content is regularly fetched, processed, and made available for search without manual intervention.
 
@@ -76,7 +76,11 @@ For user interaction, this repository includes a Gradio-based UI for local explo
 │   ├── workflows/
 │   │   ├── ci.yml
 │   │   └── cd.yml
-├── frontend/                                  # Gradio UI for local testing and demos
+├── frontend/                                  # React (Vite) UI — main web app
+│   ├── src/
+│   ├── package.json
+│   └── ...
+├── gradio-frontend/                           # Gradio UI for local testing and demos
 │   ├── __init__.py
 │   └── app.py
 ├── src/                                       # Main backend source code
@@ -111,8 +115,8 @@ For user interaction, this repository includes a Gradio-based UI for local explo
 │   │              ├── evaluation_metrics.py
 │   │              ├── messages.py
 │   │              └── prompts.py
-│   ├── configs/                               # List of newsletter feeds
-│   │   ├── feed_rss.yaml
+│   ├── configs/                               # List of RSS/feed configs
+│   │   ├── feeds_rss.yaml
 │   ├── infrastructure/                        # Infrastructure integrations
 │   │   ├── __init__.py
 │   │   ├── qdrant/                            # Qdrant vector DB integration
@@ -204,8 +208,8 @@ You do not need the following optional components to run the pipeline unless you
 Clone the repository, install dependencies, and set up your environment variables:
 
 ```bash
-git clone https://github.com/benitomartin/substack-newsletters-search-course.git
-cd substack-newsletters-search-course
+git clone https://github.com/karenwhite33/agents-tool-rag.git
+cd agents-tool-rag
 uv sync --all-groups
 source .venv/bin/activate
 cp .env.example .env
@@ -278,7 +282,7 @@ Edit the following files to configure your deployment:
   - **Optional**:
     - From the above optional services listed above Google Cloud Run is configured in the CLI, so no need to set anything here. Gradio does not require any settings and Opik integration requires only the `OPENAI_API_KEY`, which can be set in the `.env` file.
     - See below for details on enabling Jina or Hugging Face embeddings if desired.
-- **Newsletters Feeds**: `src/configs/feed_rss.yaml`
+- **RSS / Feeds config**: `src/configs/feeds_rss.yaml`
 
 ### 🔢 Embedding Models
 
@@ -327,7 +331,7 @@ ______________________________________________________________________
 Supabase acts as the primary relational database, storing all ingested article metadata and content. You must create a Supabase project and update your `.env` file with the connection details. The free tier is sufficient for the current setup (only 10% capacity usage).
 
 ```bash
-SUPABASE_DB__TABLE_NAME=substack_articles
+SUPABASE_DB__TABLE_NAME=rss_articles
 SUPABASE_DB__HOST=your_supabase_db_host_here
 SUPABASE_DB__NAME=postgres
 SUPABASE_DB__USER=your_supabase_db_user_here
@@ -466,7 +470,7 @@ prefect deployment run 'qdrant_ingest_flow/qdrant_ingest_flow' --param from_date
 
 ### ⚡ FastAPI
 
-The FastAPI backend exposes a high-performance REST API for searching and querying your Substack article corpus. It supports both traditional keyword-based search and advanced LLM-powered question answering. The API is designed for easy integration with custom UIs, automation scripts, or third-party tools.
+The FastAPI backend exposes a high-performance REST API for searching and querying your AI agent tools corpus. It supports both traditional keyword-based search and advanced LLM-powered question answering. The API is designed for easy integration with custom UIs, automation scripts, or third-party tools.
 
 Supported LLM providers:
 
@@ -525,9 +529,10 @@ The endpoint URL can be set in the Gradio UI `.env` file as follows:
 BACKEND_URL=your_fastapi_backend_url_here
 ```
 
-### 🎨 Gradio UI (Optional)
+### 🎨 Frontends
 
-A simple Gradio UI is included in `frontend/app.py` for local experimentation and demos. You can run it locally at [http://localhost:7860](http://localhost:7860) or configure it to point to your deployed FastAPI endpoint. This UI allows you to quickly test search and Q&A functionality without any complex frontend development.
+- **React frontend** (`frontend/`): Vite + React app. Run with `cd frontend && npm install && npm run dev` → [http://localhost:5173](http://localhost:5173). Use this for production (e.g. deploy to Vercel).
+- **Gradio UI** (`gradio-frontend/`, optional): Simple Gradio UI in `gradio-frontend/app.py` for local testing. Run at [http://localhost:7860](http://localhost:7860) or use:
 
 ```bash
 make run-gradio
@@ -541,7 +546,7 @@ The Opik integration, located in `service/providers/utils/evaluation_metrics.py`
 
 ```bash
 OPIK__API_KEY=your_opik_api_key_here
-OPIK__PROJECT_NAME=substack-pipeline
+OPIK__PROJECT_NAME=ai-agent-tools
 ```
 
 Additionally, in the evaluation script, you must enable the OpenAI Key by commenting out the following line:

@@ -12,13 +12,13 @@ from src.models.article_models import FeedItem
 # Supabase database settings
 # -----------------------------
 class SupabaseDBSettings(BaseModel):
-    table_name: str = Field(default="substack_articles", description="Supabase table name")
+    table_name: str = Field(default="ai_agent_tools", description="Supabase table name")
     host: str = Field(default="localhost", description="Database host")
     name: str = Field(default="postgres", description="Database name")
     user: str = Field(default="postgres", description="Database user")
     password: SecretStr = Field(default=SecretStr("password"), description="Database password")
     port: int = Field(default=6543, description="Database port")
-    test_database: str = Field(default="substack_test", description="Test database name")
+    test_database: str = Field(default="ai_agent_tools_test", description="Test database name")
 
 
 # -----------------------------
@@ -42,7 +42,7 @@ class QdrantSettings(BaseModel):
     url: str = Field(default="", description="Qdrant API URL")
     api_key: str = Field(default="", description="Qdrant API key")
     collection_name: str = Field(
-        default="substack_collection", description="Qdrant collection name"
+        default="ai_agent_tools_collection", description="Qdrant collection name"
     )
     dense_model_name: str = Field(default="BAAI/bge-base-en", description="Dense model name")
     sparse_model_name: str = Field(
@@ -125,7 +125,34 @@ class OpenRouterSettings(BaseModel):
 # -----------------------------
 class OpikObservabilitySettings(BaseModel):
     api_key: str = Field(default="", description="Opik Observability API key")
-    project_name: str = Field(default="substack-pipeline", description="Opik project name")
+    project_name: str = Field(default="ai-agent-tools", description="Opik project name")
+
+
+# -----------------------------
+# GitHub API Settings
+# -----------------------------
+class GitHubSettings(BaseModel):
+    api_key: str = Field(default="", description="GitHub Personal Access Token")
+    search_query: str = Field(default="AI agent framework", description="GitHub search query")
+    min_stars: int = Field(default=100, description="Minimum GitHub stars")
+    max_repos: int = Field(default=50, description="Maximum repos to fetch")
+    topics: list[str] = Field(
+        default_factory=lambda: ["ai", "agent", "llm", "langchain", "autogpt"],
+        description="GitHub topics to search for",
+    )
+
+
+# -----------------------------
+# Documentation Settings
+# -----------------------------
+class DocumentationSettings(BaseModel):
+    sites: list[str] = Field(
+        default_factory=lambda: [
+            "https://python.langchain.com/docs/",
+            "https://docs.crewai.com/",
+        ],
+        description="Documentation site URLs",
+    )
 
 
 # -----------------------------
@@ -164,6 +191,9 @@ class Settings(BaseSettings):
     openai: OpenAISettings = Field(default_factory=OpenAISettings)
     openrouter: OpenRouterSettings = Field(default_factory=OpenRouterSettings)
     opik: OpikObservabilitySettings = Field(default_factory=OpikObservabilitySettings)
+    
+    github: GitHubSettings = Field(default_factory=GitHubSettings)
+    documentation: DocumentationSettings = Field(default_factory=DocumentationSettings)
 
     rss_config_yaml_path: str = "src/configs/feeds_rss.yaml"
 

@@ -1,6 +1,8 @@
 import asyncio
 from datetime import datetime
 
+from sqlalchemy.exc import OperationalError
+
 from src.infrastructure.qdrant.qdrant_vectorstore import AsyncQdrantVectorStore
 from src.infrastructure.supabase.init_session import init_engine, init_session
 from src.utils.logger_util import setup_logging
@@ -51,14 +53,26 @@ async def main() -> None:
     finally:
         # Close session and Qdrant client
         if "session" in locals():
-            session.close()
-            logger.info("SQLAlchemy session closed")
+            try:
+                session.close()
+                logger.info("SQLAlchemy session closed")
+            except OperationalError as e:
+                # Connection was already closed by server (e.g., timeout)
+                logger.warning(f"⚠️ Database connection already closed: {e}")
+            except Exception as e:
+                logger.warning(f"⚠️ Error closing session: {e}")
         if "vectorstore" in locals():
-            await vectorstore.client.close()
-            logger.info("Qdrant client closed")
+            try:
+                await vectorstore.client.close()
+                logger.info("Qdrant client closed")
+            except Exception as e:
+                logger.warning(f"⚠️ Error closing Qdrant client: {e}")
         if "engine" in locals():
-            engine.dispose()
-            logger.info("Database engine disposed")
+            try:
+                engine.dispose()
+                logger.info("Database engine disposed")
+            except Exception as e:
+                logger.warning(f"⚠️ Error disposing engine: {e}")
 
 
 if __name__ == "__main__":

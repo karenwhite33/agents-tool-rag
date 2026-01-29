@@ -23,8 +23,7 @@ async def evaluate_metrics(output: str, context: str) -> dict:
         dict: A dictionary with metric names as keys and their evaluation results as values.
 
     """
-    settings.openai.api_key = None
-    logger.info(f"OpenAI key is not set: {settings.openai.api_key is None}")
+    logger.info(f"OpenAI key is not set: {settings.openai.api_key is None or not settings.openai.api_key}")
 
     if not output.strip():
         logger.warning("Output is empty. Skipping evaluation.")
@@ -51,7 +50,7 @@ async def evaluate_metrics(output: str, context: str) -> dict:
         "faithfulness": (
             (
                 "You are an expert judge tasked with evaluating whether an AI-generated answer is "
-                "faithful to the provided Substack excerpts."
+                "faithful to the provided context excerpts."
             ),
             (
                 "The OUTPUT must not introduce new information and beyond "

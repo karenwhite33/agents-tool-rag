@@ -1,154 +1,550 @@
-# Substack Articles Search Engine
+# 🤖 AI Agent Tools Search Engine
 
-![Diagram](static/app_diagram.png)
-
-<div align="center">
-
-<!-- Project Status -->
-
-[![Build Status](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/ci.yml/badge.svg)](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/ci.yml)
-[![Build Status](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/cd.yml/badge.svg)](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/cd.yml)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/benitomartin/substack-newsletters-search-course)
+![Python version](https://img.shields.io/badge/python-3.12.8-blue.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python version](https://img.shields.io/badge/python-3.12.8-blue.svg)](https://www.python.org/downloads/)
-[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
-
-<!-- Providers -->
-
-[![Supabase](https://img.shields.io/badge/Supabase-2.18.1-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
-[![Qdrant](https://img.shields.io/badge/Qdrant-1.15.1-5A31F4?logo=qdrant&logoColor=white)](https://qdrant.tech/)
-[![Cloud Run](https://img.shields.io/badge/Google%20Cloud%20Run-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com/run)
-[![Prefect](https://img.shields.io/badge/Prefect-3.4.17-FF4300?logo=prefect&logoColor=white)](https://www.prefect.io/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.116.1-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Gradio](https://img.shields.io/badge/Gradio-5.45.0-FF4B4B?logo=gradio&logoColor=white)](https://gradio.app/)
-
-</div>
 
 <p align="center">
-  <em>A RAG application for searching articles and getting answers on relevant topics from your favorite Substack newsletters</em>
+  <em>A comprehensive RAG-powered search engine for discovering and exploring AI agent frameworks, libraries, and tools from multiple sources</em>
 </p>
+
+---
 
 ## 📚 Table of Contents
 
-- [Substack Articles Search Engine](#substack-articles-search-engine)
-  - [📚 Table of Contents](#-table-of-contents)
-  - [🙂 Contributors](#-contributors)
-  - [🎯 Why Take This Course?](#-why-take-this-course)
-  - [👥 Who Is This Course For?](#-who-is-this-course-for)
-  - [🧑‍🎓 What You Will Learn](#-what-you-will-learn)
-  - [🎓 Prerequisites](#-prerequisites)
-  - [💵 Does this course cost anything?](#-does-this-course-cost-anything)
-  - [📚 Course Outline](#-course-outline)
-  - [🚀 Getting Started](#-getting-started)
-  - [🔌 Services Providers](#-services-providers)
-  - [🪪 License](#-license)
-  
-## 🙂 Contributors
+- [Overview](#-overview)
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Data Sources](#-data-sources)
+- [Quick Start](#-quick-start)
+- [Configuration](#-configuration)
+- [Security](#-security)
+- [Usage](#-usage)
+- [API Reference](#-api-reference)
+- [Development](#-development)
+- [Deployment](#-deployment)
+- [Contributing](#-contributing)
 
-<table>
-  <tr>
-    <td align="center"><img src="https://github.com/benitomartin.png" width="100" style="border-radius:50%;"/></td>
-    <td>
-      <strong>Benito Martin | AI / ML Engineer </strong><br />
-      <a href="https://www.linkedin.com/in/benitomartin/">LinkedIn</a><br />
-      <a href="https://aiechoes.substack.com/">AI Echoes Newsletter</a><br />
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><img src="https://github.com/MichaelisTrofficus.png" width="100" style="border-radius:50%;"/></td>
-    <td>
-      <strong>Miguel Otero Pedrido | AI / ML Engineer </strong><br />
-      <a href="https://www.linkedin.com/in/migueloteropedrido/">LinkedIn</a><br />
-      <a href="https://www.youtube.com/@TheNeuralMaze">YouTube</a><br />
-      <a href="https://theneuralmaze.substack.com/">The Neural Maze Newsletter</a>
-    </td>
-  </tr>
+---
 
-</table>
+## 🎯 Overview
 
-## 🎯 Why Take This Course?
+The AI Agent Tools Search Engine aggregates, indexes, and provides semantic search capabilities across AI agent frameworks, libraries, and documentation from three primary sources:
 
-Unlike basic tutorials, this course provides a comprehensive, hands-on guide to building a complete end-to-end Retrieval-Augmented Generation (RAG) system using modern tools and best practices. You’ll see how to:
+1. **RSS Feeds** - Latest articles and tutorials from AI/ML blogs
+2. **GitHub Repositories** - Popular AI agent frameworks with metadata (stars, language, features)
+3. **Documentation Sites** - Official documentation from frameworks like LangChain, CrewAI, etc.
 
-- Automate data pipelines for ingesting and processing newsletter content
-- Integrate multiple cloud and open-source services (Supabase, Qdrant, Prefect, FastAPI)
-- Build a robust backend for keyword and LLM-powered search
-- Deploy and interact with your system using Google Cloud, a Gradio UI and REST API
+### Why Use This?
 
-## 👥 Who Is This Course For?
+- **Unified Search**: Search across GitHub repos, articles, and documentation in one place
+- **Rich Metadata**: Filter by category, language, GitHub stars, source type
+- **RAG-Powered QA**: Ask questions and get answers with source citations
+- **Real-time Updates**: Prefect flows keep data fresh
+- **Production-Ready**: FastAPI backend, Gradio UI, deployed on Google Cloud Run
 
-| Audience              | Why Join?                                             |
-|-----------------------|-------------------------------------------------------|
-| ML/AI Engineers       | Build scalable RAG and LLM-powered search systems     |
-| Software Engineers    | Learn modern backend, API, and cloud deployment skills|
-| Data Engineers        | Automate data pipelines and vector search workflows   |
-| AI Enthusiasts        | Get hands-on with real-world, production-grade tools  |
+---
 
-## 🧑‍🎓 What You Will Learn
+## ✨ Features
 
-By the end of this course, you will have a fully functional RAG system and the skills to build production-ready applications to search over your favorite newsletters. You will:
+### Search Capabilities
 
-- Ingest articles from RSS feeds and store them in Supabase
-- Generate and index embeddings in Qdrant, including payload indexes for filtering with optimized index configuration with quantization and hybrid search
-- Orchestrate and schedule workflows with Prefect (local and cloud)
-- Build and expose RESTful search endpoints using FastAPI
-- Integrate multiple LLM providers (OpenRouter, OpenAI, Hugging Face)
-- Deploy your backend to Google Cloud Run for global access
-- Create an interactive Gradio UI for end-users
+- **Semantic Search**: Hybrid dense + sparse search using Qdrant
+- **Advanced Filters**:
+  - Category (Framework, Library, Platform, Tool)
+  - Programming Language (Python, JavaScript, TypeScript, Go, Rust)
+  - Source Type (GitHub repo, RSS article, Documentation)
+  - Minimum GitHub Stars
+- **Deduplication**: Smart deduplication by title or point ID
 
-![Gradio UI](static/gradio_app.png)
+### RAG Question Answering
 
-## 🎓 Prerequisites
+- **Multi-Provider LLM Support**: OpenAI, OpenRouter, HuggingFace
+- **Streaming Responses**: Real-time answer generation
+- **Source Attribution**: See which tools/articles informed the answer
+- **Context-Aware**: Filters apply to retrieval for focused answers
 
-- Python (Intermediate)
-- Basic understanding of REST APIs
-- Familiarity with AI/LLM concepts is helpful
-- Modern laptop/PC (no GPU required; free tiers are sufficient)
+### Data Ingestion
 
-## 💵 Does this course cost anything?
+- **Automated Pipelines**: Prefect flows for scheduled ingestion
+- **Multiple Sources**: RSS, GitHub API, web scraping for docs
+- **Robust Error Handling**: Retries, logging, graceful failures
+- **Incremental Updates**: Only ingests new content
 
-- No, this course is completely free to access and learn from. Starring and sharing the repository is appreciated!
-- Google Cloud Run monthly free tier is sufficient for deployment
-- Prefect cloud monthly free tier is sufficient for orchestration once your flow is deployed but it is recommended to use prefect local server for development as it is unlimited.
-- Supabase and Qdrant monthly free tiers are sufficient for hosting the Postgres and vector databases
-- OpenRouter daily requests on free LLM models is sufficient for LLM calls but you can also use OpenAI or Hugging Face as backup LLM providers as the project supports multiple LLM providers.
-- Any other tools used in this course like FastAPI, Docker, Gradio, or Opik are completely free to use.
+---
 
-## 📚 Course Outline
+## 🏗️ Architecture
 
-| Lesson | Topic                                                        | Substack Article                 | Description                                             |
-|--------|--------------------------------------------------------------|--------------------------------|---------------------------------------------------------|
-| 1      | Setup, Configuration & Articles Ingestion                    | [Lesson 1](https://aiechoes.substack.com/p/building-a-substack-articles-search)          | Supabase Postgres setup and ingesting articles           |
-| 2      | Vector Embeddings & Semantic Search Infrastructure           | [Lesson 2](https://aiechoes.substack.com/p/building-a-substack-articles-search-6d1)        | Qdrant configuration and semantic search                 |
-| 3      | FastAPI Backend & Multi-Provider LLM Support                 | [Lesson 3](https://aiechoes.substack.com/p/building-a-substack-articles-search-9dd)        | FastAPI backend, OpenRouter, OpenAI, Hugging Face        |
-| 4      | Cloud Run Deployment & Gradio UI                             | [Lesson 4](https://aiechoes.substack.com/p/building-a-substack-articles-search-21a)          | Google Cloud Run deployment and Gradio UI                |
-| 5      | Video Application Overview                                                   | [Lesson 5](https://theneuralmaze.substack.com/p/how-to-build-production-ready-rag)                | Video demo showcasing the entire pipeline                 |
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Data Sources                            │
+├──────────────┬──────────────────┬──────────────────────────┤
+│  RSS Feeds   │   GitHub API     │  Documentation Sites     │
+│  (Articles)  │   (Repositories) │  (Web Scraping)         │
+└──────┬───────┴────────┬─────────┴──────────┬──────────────┘
+       │                │                     │
+       ▼                ▼                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│              Prefect Ingestion Flows                         │
+│   - fetch_tools_from_rss()                                  │
+│   - fetch_github_repos()                                    │
+│   - fetch_documentation()                                   │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│         PostgreSQL (Supabase) - ai_agent_tools table        │
+│  - source_name, source_author, title, url, content         │
+│  - category, language, stars, features, license            │
+│  - source_type (rss_article / github_repo / documentation) │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│         Text Chunking & Embedding Generation                │
+│  - RecursiveTextSplitter (4000 chars, 200 overlap)        │
+│  - Dense: BAAI/bge-base-en (768d)                          │
+│  - Sparse: BM25 (Qdrant)                                   │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│         Qdrant Vector Store (Hybrid Search)                 │
+│  - Dense vectors (semantic similarity)                      │
+│  - Sparse vectors (keyword matching)                        │
+│  - Payload indexes (category, language, stars, type)       │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                FastAPI Backend                              │
+│  - /search/unique-titles (search endpoint)                 │
+│  - /search/ask (RAG QA, non-streaming)                     │
+│  - /search/ask/stream (RAG QA, streaming)                  │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│               Gradio Web UI                                 │
+│  - Search Tools: Filter by category, language, stars       │
+│  - Ask AI: RAG-powered Q&A with sources                    │
+│  - Real-time streaming responses                            │
+└─────────────────────────────────────────────────────────────┘
+```
 
-## 🚀 Getting Started
+---
 
-Follow the [INSTRUCTIONS.md](INSTRUCTIONS.md) in the documentation to set up your environment, install dependencies, and configure services.
+## 📊 Data Sources
 
-All components are explained in detail in the documentation but if you have any questions, feel free to open an issue or reach out!
+### 1. RSS Feeds (Articles)
 
-## 🔌 Services Providers
+**Purpose**: Latest tutorials, guides, and news about AI agents
 
-This project integrates several best-in-class open-source and cloud services to provide a scalable, production-ready RAG pipeline:
+**Feeds Included**:
+- LangChain Blog
+- Hugging Face Blog
+- Towards Data Science
+- TechCrunch AI
+- Various AI/ML newsletters
 
-| Service  | Description                           | Docs/Links                                                                  |
-| -------- | ------------------------------------- | --------------------------------------------------------------------------- |
-| Supabase | PostgreSQL database for articles      | [Supabase](https://supabase.com/docs)                                       |
-| Qdrant   | Vector DB for embeddings              | [Qdrant](https://qdrant.tech/documentation/database-tutorials/bulk-upload/) |
-| Prefect  | Orchestration for ingestion/embedding | [Prefect](https://docs.prefect.io/)                                         |
-| OpenRouter                                    | LLM Provider                        | [OpenRouter](https://www.openrouter.com/)                                   |
-| OpenAI, Hugging Face (backup)                 | LLM Provider (backup)               | [OpenAI](https://platform.openai.com/docs/) / [Hugging Face](https://huggingface.co/docs) |
-| Docker   | Containerization                      | [Docker](https://docs.docker.com/)                                          |
-| FastAPI  | API for querying/search               | [FastAPI](https://fastapi.tiangolo.com/)                                    |
-| Google Cloud SDK | Command-line interface for Google Cloud services | [Google Cloud SDK](https://cloud.google.com/sdk/docs)    |
-| Gradio   | UI                           | [Gradio](https://gradio.app/get_started)                                    |
-| Opik AI  | LLM evaluation               | [Opik](https://opik.ai/)                                                    |
-| Google Cloud Run | Deployment and hosting        | [Cloud Run](https://cloud.google.com/run/docs)                              |
+**Data Extracted**:
+- Title, URL, content (markdownified)
+- Author, publication date
+- Category/language (inferred from tags)
 
-## 🪪 License
+### 2. GitHub Repositories
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+**Purpose**: Discover popular AI agent frameworks and libraries
+
+**Search Query**: "AI agent framework" with stars >100
+
+**Data Extracted**:
+- Repo name, description, URL
+- Stars, language, license, topics
+- README content (first 10k chars)
+- Owner/organization
+
+**API**: GitHub REST API v3
+- Rate limit: 5000 req/hr (authenticated)
+- Requires `GITHUB__API_KEY`
+
+### 3. Documentation Sites
+
+**Purpose**: Official documentation for major frameworks
+
+**Sites Scraped**:
+- LangChain (https://python.langchain.com/docs/)
+- CrewAI (https://docs.crewai.com/)
+- LlamaIndex (https://docs.llamaindex.ai/)
+- Hugging Face Transformers
+- Semantic Kernel
+- AutoGPT
+
+**Data Extracted**:
+- Page title, content (markdownified)
+- Headings (extracted as features)
+- URL, publication date
+
+**Method**: Web scraping with BeautifulSoup
+- Respects robots.txt
+- Handles sitemap.xml when available
+- Graceful fallback for different site structures
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.12.8+
+- PostgreSQL database (Supabase recommended)
+- Qdrant vector store (cloud or local)
+- GitHub Personal Access Token
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/ai-agent-tools-search.git
+cd ai-agent-tools-search
+
+# Install dependencies with uv (recommended)
+uv sync
+
+# Or with pip
+pip install -r requirements.txt
+```
+
+### Environment Setup
+
+Create a `.env` file (copy from `.env.example` and fill in values). **Do not commit `.env` or real API keys**; see `SECURITY.md` for details.
+
+```bash
+# Database (Supabase)
+SUPABASE_DB__HOST=your-supabase-host.supabase.co
+SUPABASE_DB__NAME=postgres
+SUPABASE_DB__USER=postgres
+SUPABASE_DB__PASSWORD=your-password
+SUPABASE_DB__PORT=6543
+
+# Qdrant
+QDRANT__URL=https://your-qdrant-cluster.qdrant.io
+QDRANT__API_KEY=your-qdrant-api-key
+QDRANT__COLLECTION_NAME=ai_agent_tools_collection
+
+# GitHub API (Required)
+GITHUB__API_KEY=ghp_your_github_token_here
+GITHUB__SEARCH_QUERY="AI agent framework"
+GITHUB__MIN_STARS=100
+GITHUB__MAX_REPOS=50
+
+# LLM Providers (Optional)
+OPENAI__API_KEY=your-openai-key
+OPENROUTER__API_KEY=your-openrouter-key
+HUGGING_FACE__API_KEY=your-hf-key
+
+# Observability (Optional)
+OPIK__API_KEY=your-opik-key
+```
+
+### Create Database & Vector Store
+
+```bash
+# Create PostgreSQL table
+python -m src.infrastructure.supabase.create_db
+
+# Create Qdrant collection
+python -m src.infrastructure.qdrant.create_collection
+python -m src.infrastructure.qdrant.create_indexes
+```
+
+### Run Initial Ingestion
+
+```bash
+# Ingest from all sources (RSS + GitHub + Docs)
+python -m src.pipelines.flows.tools_ingestion_flow
+
+# Upload to Qdrant vector store
+python -m src.infrastructure.qdrant.ingest_from_sql_tools
+```
+
+### Start the Application
+
+**First time (or after pulling dependency changes):** install backend dependencies from the repo root:
+
+```bash
+uv sync
+```
+
+Then:
+
+```bash
+# Start FastAPI backend (Terminal 1) — use uv run so project deps (e.g. qdrant-client) are used
+uv run uvicorn src.api.main:app --reload --port 8080
+
+# Start Gradio UI (Terminal 2, optional)
+uv run gradio-frontend/app.py
+
+# Or start React frontend (Terminal 2)
+cd frontend && npm install && npm run dev
+```
+
+Visit:
+- React frontend: http://localhost:5173
+- Gradio UI: http://localhost:7860
+- API Docs: http://localhost:8080/docs
+
+---
+
+## ⚙️ Configuration
+
+### RSS Feeds (`src/configs/feeds_rss.yaml`)
+
+```yaml
+feeds:
+- name: "LangChain Blog"
+  author: "LangChain Team"
+  url: "https://blog.langchain.dev/feed/"
+- name: "Hugging Face Blog"
+  author: "Hugging Face Team"
+  url: "https://huggingface.co/blog/feed.xml"
+```
+
+### Documentation Sites (`src/configs/doc_sites.yaml`)
+
+```yaml
+sites:
+- name: "LangChain"
+  url: "https://python.langchain.com/docs/"
+  base_url: "https://python.langchain.com"
+  category: "Framework"
+  language: "Python"
+  author: "LangChain Team"
+```
+
+### Text Chunking (`src/config.py`)
+
+```python
+TextSplitterSettings(
+    chunk_size=4000,
+    chunk_overlap=200,
+    separators=["\n---\n", "\n\n", "\n## ", ...]
+)
+```
+
+---
+
+## 🔒 Security
+
+For security measures (prompt injection, XSS, rate limiting, CORS, API key handling, and deployment checklist), see **[SECURITY.md](SECURITY.md)**. **Do not commit `.env` or real API keys**; use `.env.example` as a template and keep secrets local or in your host’s env config.
+
+---
+
+## 💡 Usage
+
+### Search for Tools
+
+```python
+import requests
+
+response = requests.post("http://localhost:8080/search/unique-titles", json={
+    "query_text": "python agent framework with memory",
+    "category": "Framework",
+    "language": "Python",
+    "min_stars": 1000,
+    "limit": 5
+})
+
+results = response.json()["results"]
+for tool in results:
+    print(f"{tool['title']} - {tool['stars']} stars")
+```
+
+### Ask Questions with RAG
+
+```python
+response = requests.post("http://localhost:8080/search/ask", json={
+    "query_text": "What are the best Python frameworks for building AI agents?",
+    "category": "Framework",
+    "language": "Python",
+    "limit": 5,
+    "provider": "openrouter"
+})
+
+answer = response.json()["answer"]
+sources = response.json()["sources"]
+```
+
+---
+
+## 📡 API Reference
+
+### POST `/search/unique-titles`
+
+Search for unique tools/articles.
+
+**Request:**
+```json
+{
+  "query_text": "string",
+  "category": "Framework | Library | Platform | Tool",
+  "language": "Python | JavaScript | TypeScript | Go | Rust",
+  "source_type": "github_repo | rss_article | documentation",
+  "min_stars": 100,
+  "limit": 5
+}
+```
+
+**Response:**
+```json
+{
+  "results": [
+    {
+      "title": "LangChain",
+      "source_name": "GitHub",
+      "source_author": "langchain-ai",
+      "url": "https://github.com/langchain-ai/langchain",
+      "category": "Framework",
+      "language": "Python",
+      "stars": 50000,
+      "features": ["agents", "chains", "memory"],
+      "source_type": "github_repo",
+      "score": 0.95
+    }
+  ]
+}
+```
+
+### POST `/search/ask`
+
+RAG-powered question answering (non-streaming).
+
+**Request:**
+```json
+{
+  "query_text": "How do I build a conversational AI agent?",
+  "category": "Framework",
+  "limit": 5,
+  "provider": "openrouter",
+  "model": "anthropic/claude-3-sonnet"
+}
+```
+
+**Response:**
+```json
+{
+  "query": "How do I build a conversational AI agent?",
+  "answer": "To build a conversational AI agent...",
+  "sources": [...],
+  "provider": "openrouter",
+  "model": "anthropic/claude-3-sonnet",
+  "finish_reason": "stop"
+}
+```
+
+### POST `/search/ask/stream`
+
+RAG-powered question answering (streaming).
+
+Returns `text/plain` stream with chunks of generated text.
+
+---
+
+## 🛠️ Development
+
+### Running Tests
+
+```bash
+# All tests
+pytest
+
+# Unit tests only
+pytest tests/unit/
+
+# Integration tests
+pytest tests/integration/
+
+# With coverage
+pytest --cov=src tests/
+```
+
+### Code Quality
+
+```bash
+# Format code
+ruff format .
+
+# Lint
+ruff check .
+
+# Type check
+mypy src/
+```
+
+### Pre-commit Hooks
+
+```bash
+pre-commit install
+pre-commit run --all-files
+```
+
+---
+
+## 🚢 Deployment
+
+### Google Cloud Run
+
+```bash
+# Build and deploy
+gcloud builds submit --config cloudbuild_fastapi.yaml
+
+# Or use the deploy script
+chmod +x deploy_fastapi.sh
+./deploy_fastapi.sh
+```
+
+### Prefect Cloud Scheduling
+
+```bash
+# Deploy flows to Prefect Cloud
+prefect deploy --all --prefect-file prefect-cloud.yaml
+
+# Schedule daily ingestion
+prefect deployment run 'ai_tools_ingest_flow/production' --param enable_rss=true
+```
+
+### Ready for GitHub & Vercel
+
+**Before you push to GitHub:**  
+- Ensure `.env` and `frontend/.env` (and `frontend/.env.production`, `frontend/.env.development`) are **not** staged; they are in `.gitignore` and should never be committed. Run `git status` and confirm no `.env` files are listed.
+
+**After pushing to GitHub, to deploy the frontend on Vercel:**  
+1. Go to [vercel.com](https://vercel.com) → **Add New** → **Project** → Import your `agents-tool-rag` repo.  
+2. Set **Root Directory** to `frontend` (the React app lives there).  
+3. Add **Environment Variables** in Vercel: `VITE_BACKEND_URL` = your FastAPI URL (e.g. Cloud Run), `VITE_API_KEY` = your backend API key.  
+4. Deploy. Then add your Vercel URL to the backend **ALLOWED_ORIGINS** and redeploy the backend so CORS allows the frontend.
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details
+
+---
+
+## 🙏 Acknowledgments
+
+- **LangChain** for the amazing agent framework
+- **Qdrant** for the vector database
+- **Supabase** for PostgreSQL hosting
+- **FastAPI** for the API framework
+- **Gradio** for the UI
+- **Prefect** for workflow orchestration
+
+---
+
+## 📧 Contact
+
+For questions or feedback, open an issue on GitHub.
+
+**Built with ❤️ for the AI agent community**

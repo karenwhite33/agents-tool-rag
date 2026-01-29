@@ -1,0 +1,281 @@
+@import "tailwindcss";
+
+/* ==========================
+   SPINNER & ANIMATIONS
+========================== */
+
+/* Common gradient background for spinners */
+.bg-conic-gradient {
+  background: conic-gradient(
+    from 0deg,
+    #3b82f6 0%,
+    #60a5fa 30%,
+    #93c5fd 60%,
+    #3b82f6 100%
+  );
+}
+
+/* Fade in/out animations */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-in-out;
+}
+
+/* ==========================
+   MARKDOWN CONTAINER
+========================== */
+.markdown-content {
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+
+/* ==========================
+   TABLES (CARD STYLE)
+========================== */
+/* CARD-LIKE TABLE WRAPPER WITH SCROLLER */
+.markdown-content table {
+  display: block; /* allow scrolling */
+  border-collapse: separate; /* allow border-radius */
+  border-spacing: 0;
+  width: 100%;
+  margin: 1rem 0;
+  border-radius: 0.75rem; /* rounded corners for card */
+  overflow-x: auto; /* horizontal scroll */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* subtle shadow */
+  background-color: #ffffff; /* card background */
+  color: #1f2937; /* dark text */
+}
+
+/* Table headers & body */
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #e5e7eb; /* subtle border */
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.markdown-content th {
+  background-color: #3b82f6; /* Indigo-500 */
+  color: white;
+  font-weight: 600;
+}
+
+/* Alternating row colors */
+.markdown-content tr:nth-child(even) {
+  background-color: #f3f4f6; /* light gray */
+}
+
+/* Hover effect for rows */
+.markdown-content tr:hover {
+  background-color: #e0f2fe; /* light blue */
+}
+
+/* Smaller font size for mobile screens */
+@media (max-width: 640px) { /* Tailwind's sm breakpoint */
+  .markdown-content th,
+  .markdown-content td {
+    font-size: 0.775rem; /* slightly smaller on mobile */
+    padding: 0.5rem 0.75rem; /* optional: reduce padding too */
+  }
+}
+
+/* ==========================
+   IMAGES & PARAGRAPHS
+========================== */
+.markdown-content img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.markdown-content p {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* ==========================
+   LIST ITEMS (LI)
+========================== */
+.markdown-content li {
+  font-size: 0.95rem;
+  margin: 0.4em 0;
+}
+
+/* ==========================
+   LINKS
+========================== */
+.markdown-content a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.markdown-content a:hover {
+  color: #1d4ed8;
+}
+
+/* ==========================
+   CODE BLOCKS
+========================== */
+/* Preformatted blocks - VSCode style */
+.markdown-content pre {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Inline code */
+.markdown-content code {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+}
+
+/* ==========================
+   HEADINGS
+========================== */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin: 1rem 0 0.5rem;
+}
+
+.markdown-content h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 1.5rem 0 0.75rem;
+  color: #1e40af; /* Indigo-900 */
+}
+
+.markdown-content h2 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 1.25rem 0 0.5rem;
+  color: #1e40af;
+}
+
+.markdown-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1rem 0 0.5rem;
+  color: #1e3a8a;
+}
+
+.markdown-content h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0.875rem 0 0.5rem;
+  color: #1e3a8a;
+}
+
+.markdown-content h5 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0.75rem 0 0.25rem;
+  color: #1e40af;
+}
+
+.markdown-content h6 {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 0.5rem 0 0.25rem;
+  color: #1e40af;
+}
+
+/* ==========================
+   SYNTAX HIGHLIGHTING (HIGHLIGHT.JS)
+========================== */
+.hljs-comment,
+.hljs-quote {
+  color: #6a9955;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #569cd6;
+}
+
+.hljs-literal,
+.hljs-number,
+.hljs-tag .hljs-attr,
+.hljs-template-variable,
+.hljs-variable {
+  color: #b5cea8;
+}
+
+.hljs-string,
+.hljs-doctag {
+  color: #d69d85;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #4ec9b0;
+}
+
+.hljs-subst {
+  color: #d4d4d4;
+}
+
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #4ec9b0;
+}
+
+.hljs-function .hljs-title {
+  color: #dcdcaa;
+}
+
+.hljs-attribute {
+  color: #9cdcfe;
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #c586c0;
+}
+
+.hljs-meta {
+  color: #9cdcfe;
+}
+
+.hljs-deletion {
+  background-color: #511f1f;
+}
+
+.hljs-addition {
+  background-color: #144212;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}

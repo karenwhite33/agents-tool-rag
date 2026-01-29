@@ -3,7 +3,7 @@ import responses
 from loguru import logger
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from test_models.test_sql_models import SubstackTestArticle
+from test_models.test_sql_models import RSSTestArticle
 
 from src.infrastructure.supabase.init_session import init_engine
 from src.models.article_models import ArticleItem, FeedItem
@@ -49,8 +49,8 @@ def test_fetch_rss_mocked_feed() -> None:
     try:
         # Clear the test table before running
         session = Session(bind=engine)
-        logger.info("Clearing test table 'substack_test' before test")
-        session.execute(text("DELETE FROM substack_test"))
+        logger.info("Clearing test table 'rss_articles_test' before test")
+        session.execute(text("DELETE FROM rss_articles_test"))
         session.commit()
         logger.info("Test table cleared")
 
@@ -58,7 +58,7 @@ def test_fetch_rss_mocked_feed() -> None:
         articles = fetch_rss_entries(
             feed=test_feed,
             engine=engine,
-            article_model=SubstackTestArticle,
+            article_model=RSSTestArticle,
         )
         logger.info(f"Fetched {len(articles)} articles from {test_feed.url}")
 

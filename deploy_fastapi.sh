@@ -25,8 +25,8 @@ echo "✅ Environment variables loaded."
 # -----------------------
 # Configuration
 # -----------------------
-PROJECT_ID="substack-pipeline"
-SERVICE_NAME="substack-pipeline-fastapi"
+PROJECT_ID="rss-rag-485516"
+SERVICE_NAME="ai-agent-tools-fastapi"
 REGION="europe-west6" #europe-west1 "europe-west6"
 IMAGE_NAME="gcr.io/$PROJECT_ID/$SERVICE_NAME"
 
@@ -57,6 +57,9 @@ gcloud builds submit --config cloudbuild_fastapi.yaml \
 # Deploy to Cloud Run
 # -----------------------
 echo "🚀 Deploying $SERVICE_NAME to Cloud Run..."
+
+# Combine all env vars using custom delimiter for values with commas
+# Use ^##^ to tell gcloud to use ## as delimiter instead of comma
 gcloud run deploy "$SERVICE_NAME" \
 --image "$IMAGE_NAME" \
 --platform managed \
@@ -70,17 +73,7 @@ gcloud run deploy "$SERVICE_NAME" \
 --max-instances 2 \
 --execution-environment gen2 \
 --cpu-boost \
---set-env-vars HF_HOME=/tmp/huggingface \
---set-env-vars HUGGING_FACE__API_KEY=$HUGGING_FACE__API_KEY \
---set-env-vars QDRANT__API_KEY=$QDRANT__API_KEY \
---set-env-vars QDRANT__URL=$QDRANT__URL \
---set-env-vars QDRANT__COLLECTION_NAME=$QDRANT__COLLECTION_NAME \
---set-env-vars QDRANT__DENSE_MODEL_NAME=$QDRANT__DENSE_MODEL_NAME \
---set-env-vars QDRANT__SPARSE_MODEL_NAME=$QDRANT__SPARSE_MODEL_NAME \
---set-env-vars OPENROUTER__API_KEY=$OPENROUTER__API_KEY \
---set-env-vars OPIK__API_KEY=$OPIK__API_KEY \
---set-env-vars OPIK__PROJECT_NAME=$OPIK__PROJECT_NAME \
---set-env-vars "^@^ALLOWED_ORIGINS=$ALLOWED_ORIGINS@" \
+--set-env-vars "^##^HF_HOME=/tmp/huggingface##HUGGING_FACE__API_KEY=$HUGGING_FACE__API_KEY##QDRANT__API_KEY=$QDRANT__API_KEY##QDRANT__URL=$QDRANT__URL##QDRANT__COLLECTION_NAME=$QDRANT__COLLECTION_NAME##QDRANT__DENSE_MODEL_NAME=$QDRANT__DENSE_MODEL_NAME##QDRANT__SPARSE_MODEL_NAME=$QDRANT__SPARSE_MODEL_NAME##OPENROUTER__API_KEY=$OPENROUTER__API_KEY##OPIK__API_KEY=$OPIK__API_KEY##OPIK__PROJECT_NAME=$OPIK__PROJECT_NAME##ALLOWED_ORIGINS=$ALLOWED_ORIGINS##API_KEY=$API_KEY##AUTH_REQUIRED=$AUTH_REQUIRED##ENVIRONMENT=$ENVIRONMENT##RATE_LIMIT_PER_MINUTE=$RATE_LIMIT_PER_MINUTE##RATE_LIMIT_PER_HOUR=$RATE_LIMIT_PER_HOUR"
 
 # Log the allowed origins
 echo "✅ Allowed origins set to: $ALLOWED_ORIGINS"

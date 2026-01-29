@@ -7,6 +7,6 @@ steps:
       export DOCKER_BUILDKIT=1
       docker build -t gcr.io/${PROJECT_ID}/${_SERVICE_NAME} -f Dockerfile .
 substitutions:
-  _SERVICE_NAME: "substack-pipeline-fastapi"
+  _SERVICE_NAME: "ai-agent-tools-fastapi"
 images:
   - "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}"

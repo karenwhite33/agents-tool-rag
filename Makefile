@@ -22,6 +22,16 @@ supabase-delete: ## Delete Supabase database
 	@echo "Deleting Supabase database..."
 	uv run python src/infrastructure/supabase/delete_db.py
 
+supabase-enable-rls: ## Enable Row Level Security (RLS) on existing tables
+	@echo "Enabling RLS on Supabase tables..."
+	uv run python -m src.infrastructure.supabase.enable_rls
+	@echo "RLS enabled successfully."
+
+supabase-test-rls: ## Test RLS policies are configured correctly
+	@echo "Testing RLS policies..."
+	uv run pytest tests/integration/test_rls_policies.py -v
+	@echo "RLS tests completed."
+
 #################################################################################
 ## Qdrant Commands
 #################################################################################
@@ -88,7 +98,7 @@ recreate-all: supabase-delete qdrant-delete-collection supabase-create qdrant-cr
 
 run-api: ## Run FastAPI application
 	@echo "Starting FastAPI application..."
-	uv run src/api/main.py
+	uv run uvicorn src.api.main:app --reload --port 8080
 	@echo "FastAPI application stopped."
 
 #################################################################################
@@ -97,7 +107,7 @@ run-api: ## Run FastAPI application
 
 run-gradio: ## Run Gradio application
 	@echo "Starting Gradio application..."
-	uv run frontend/app.py
+	uv run gradio-frontend/app.py
 	@echo "Gradio application stopped."
 
 #################################################################################

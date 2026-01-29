@@ -10,8 +10,8 @@ class Base(DeclarativeBase):
     pass
 
 
-class SubstackTestArticle(Base):
-    __tablename__ = "substack_test"
+class RSSTestArticle(Base):
+    __tablename__ = "rss_articles_test"
 
     # Primary internal ID
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, index=True)

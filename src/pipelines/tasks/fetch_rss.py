@@ -8,13 +8,13 @@ from sqlalchemy.orm import Session
 
 from src.infrastructure.supabase.init_session import init_session
 from src.models.article_models import ArticleItem, FeedItem
-from src.models.sql_models import SubstackArticle
+from src.models.sql_models import RSSArticle
 from src.utils.logger_util import setup_logging
 
 
 @task(
     task_run_name="fetch_rss_entries-{feed.name}",
-    description="Fetch RSS entries from a Substack feed.",
+    description="Fetch RSS entries from an RSS feed.",
     retries=2,
     retry_delay_seconds=120,
     cache_policy=NO_CACHE,
@@ -22,9 +22,9 @@ from src.utils.logger_util import setup_logging
 def fetch_rss_entries(
     feed: FeedItem,
     engine: Engine,
-    article_model: type[SubstackArticle] = SubstackArticle,
+    article_model: type[RSSArticle] = RSSArticle,
 ) -> list[ArticleItem]:
-    """Fetch all RSS items from a Substack feed and convert them to ArticleItem objects.
+    """Fetch all RSS items from an RSS feed and convert them to ArticleItem objects.
 
     Each task uses its own SQLAlchemy session. Articles already stored in the database
     or with empty links/content are skipped. Errors during parsing individual items
@@ -33,8 +33,8 @@ def fetch_rss_entries(
     Args:
         feed (FeedItem): Metadata for the feed (name, author, URL).
         engine (Engine): SQLAlchemy engine for database connection.
-        article_model (type[SubstackArticle], optional): Model used to persist articles.
-            Defaults to SubstackArticle.
+        article_model (type[RSSArticle], optional): Model used to persist articles.
+            Defaults to RSSArticle.
 
     Returns:
         list[ArticleItem]: List of new ArticleItem objects ready for parsing/ingestion.
@@ -151,7 +151,7 @@ def fetch_rss_entries(
 #     engine = init_engine()
 #     test_feed = FeedItem(
 #         name="AI Echoes",
-#         author="Benito Martin",
+#         author="—",
 #         url="https://aiechoes.substack.com/feed"
 #     )
 #     articles = fetch_rss_entries(test_feed, engine)

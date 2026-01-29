@@ -4,7 +4,7 @@ from loguru import logger
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
-from test_models.test_sql_models import SubstackTestArticle  # Test-specific table model
+from test_models.test_sql_models import RSSTestArticle  # Test-specific table model
 
 from src.models.article_models import FeedItem
 from src.pipelines.tasks.fetch_rss import fetch_rss_entries
@@ -29,12 +29,12 @@ def test_rss_pipeline_end_to_end_mocked(db_session: Session, db_engine: Engine) 
     """
 
     # Clear test table
-    logger.info("Clearing test table 'substack_test'")
-    db_session.execute(text("DELETE FROM substack_test"))
+    logger.info("Clearing test table 'rss_articles_test'")
+    db_session.execute(text("DELETE FROM rss_articles_test"))
     db_session.commit()
 
     # Verify table is empty
-    initial_count = db_session.query(SubstackTestArticle).count()
+    initial_count = db_session.query(RSSTestArticle).count()
     logger.info(f"Initial article count in test table: {initial_count}")
     assert initial_count == 0, "Test table was not cleared"
 
@@ -88,7 +88,7 @@ def test_rss_pipeline_end_to_end_mocked(db_session: Session, db_engine: Engine) 
     fetched_articles = fetch_rss_entries(
         test_feed,
         engine=db_engine,
-        article_model=SubstackTestArticle,
+        article_model=RSSTestArticle,
     )
     logger.info(f"Fetched {len(fetched_articles)} articles for feed '{test_feed.name}'")
 
@@ -99,14 +99,14 @@ def test_rss_pipeline_end_to_end_mocked(db_session: Session, db_engine: Engine) 
     ingest_from_rss(
         fetched_articles,
         feed=test_feed,
-        article_model=SubstackTestArticle,
+        article_model=RSSTestArticle,
         engine=db_engine,
     )
 
     # Verify DB insertion
     articles_in_db = (
-        db_session.query(SubstackTestArticle)
-        .order_by(SubstackTestArticle.published_at.desc())
+        db_session.query(RSSTestArticle)
+        .order_by(RSSTestArticle.published_at.desc())
         .all()
     )
     logger.info(f"Inserted article titles: {[a.title for a in articles_in_db]}")
@@ -122,7 +122,7 @@ def test_rss_pipeline_end_to_end_mocked(db_session: Session, db_engine: Engine) 
 
 ################################################################################
 # The code below calls out to live URLs and is not suitable for CI,
-# as Substack may block requests from CI environments.
+# as some RSS feeds may block requests from CI environments.
 # It is left here for reference and can be run manually if desired.
 # Uncomment to enable live integration test
 
@@ -132,7 +132,7 @@ def test_rss_pipeline_end_to_end_mocked(db_session: Session, db_engine: Engine) 
 # from sqlalchemy import text
 # from sqlalchemy.engine import Engine
 # from sqlalchemy.orm import Session
-# from test_models.test_sql_models import SubstackTestArticle  # Test-specific table model
+# from test_models.test_sql_models import RSSTestArticle  # Test-specific table model
 
 # from src.models.article_models import FeedItem
 # from src.pipelines.tasks.batch_parse_ingest_articles import parse_and_ingest
@@ -153,12 +153,12 @@ def test_rss_pipeline_end_to_end_mocked(db_session: Session, db_engine: Engine) 
 
 #     """
 #     # Clear test table
-#     logger.info("Clearing test table 'substack_test'")
-#     db_session.execute(text("DELETE FROM substack_test"))
+#     logger.info("Clearing test table 'rss_articles_test'")
+#     db_session.execute(text("DELETE FROM rss_articles_test"))
 #     db_session.commit()
 
 #     # Verify table is empty
-#     initial_count = db_session.query(SubstackTestArticle).count()
+#     initial_count = db_session.query(RSSTestArticle).count()
 #     logger.info(f"Initial article count in test table: {initial_count}")
 #     assert initial_count == 0, "Test table was not cleared"
 
@@ -173,7 +173,7 @@ def test_rss_pipeline_end_to_end_mocked(db_session: Session, db_engine: Engine) 
 #     fetched_articles = fetch_rss_entries(
 #         test_feed,
 #         engine=db_engine,
-#         article_model=SubstackTestArticle,
+#         article_model=RSSTestArticle,
 #     )
 #     logger.info(f"Fetched {len(fetched_articles)} articles for feed '{test_feed.name}'")
 
@@ -185,14 +185,14 @@ def test_rss_pipeline_end_to_end_mocked(db_session: Session, db_engine: Engine) 
 #     parse_and_ingest(
 #         fetched_articles,
 #         feed=test_feed,
-#         article_model=SubstackTestArticle,
+#         article_model=RSSTestArticle,
 #         engine=db_engine,
 #     )
 
 #     # Verify DB insertion
 #     articles_in_db = (
-#         db_session.query(SubstackTestArticle)
-#         .order_by(SubstackTestArticle.published_at.desc())
+#         db_session.query(RSSTestArticle)
+#         .order_by(RSSTestArticle.published_at.desc())
 #         .all()
 #     )
 #     logger.info(f"Inserted article titles: {[a.title for a in articles_in_db]}")

@@ -12,7 +12,10 @@ from src.api.exceptions.exception_handlers import (
     qdrant_exception_handler,
     validation_exception_handler,
 )
+from src.api.middleware.auth import verify_api_key
+from fastapi import Depends
 from src.api.middleware.logging_middleware import LoggingMiddleware
+from src.api.middleware.rate_limit import limiter, rate_limit_exceeded_handler, RateLimitExceeded
 from src.api.routes.health_routes import router as health_router
 from src.api.routes.search_routes import router as search_router
 from src.infrastructure.qdrant.qdrant_vectorstore import AsyncQdrantVectorStore
@@ -73,9 +76,9 @@ async def lifespan(app: FastAPI):
 # -----------------------
 
 app = FastAPI(
-    title="Substack RAG API",
+    title="AI Agent Tools RAG API",
     version="1.0",
-    description="API for Substack Retrieval-Augmented Generation (RAG) system",
+    description="API for AI Agent Tools Retrieval-Augmented Generation (RAG) system",
     lifespan=lifespan,
     # root_path=root_path,
 )
@@ -86,18 +89,37 @@ app = FastAPI(
 # -----------------------
 
 
-# Log the allowed origins
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
+# -----------------------
+# CORS Configuration (with validation)
+# -----------------------
+allowed_origins_raw = os.getenv("ALLOWED_ORIGINS", "")
+# Filter out empty strings and whitespace
+allowed_origins = [origin.strip() for origin in allowed_origins_raw.split(",") if origin.strip()]
+
+# If no origins specified, default to empty list (no CORS allowed)
+if not allowed_origins:
+    logger.warning("ALLOWED_ORIGINS not set or empty - CORS will be disabled")
+    allowed_origins = []
+
 logger.info(f"CORS allowed origins: {allowed_origins}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,  # ["*"],  # allowed_origins,
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],  # only the methods the app uses
-    allow_headers=["Authorization", "Content-Type"],  # only headers needed
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-API-Key"],  # Added X-API-Key
 )
 
+# -----------------------
+# Rate Limiting
+# -----------------------
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
+
+# -----------------------
+# Logging Middleware
+# -----------------------
 app.add_middleware(LoggingMiddleware)
 
 
@@ -110,10 +132,22 @@ app.add_exception_handler(Exception, general_exception_handler)
 
 
 # -----------------------
-# Routers
+# Routers (with authentication and rate limiting)
 # -----------------------
-app.include_router(search_router, prefix="/search", tags=["search"])
+# Initialize rate limiter for search routes
+from src.api.routes.search_routes import set_limiter
+set_limiter(app.state.limiter)
+
+# Health endpoint doesn't require auth (for monitoring)
 app.include_router(health_router, tags=["health"])
+
+# Search endpoints require authentication
+app.include_router(
+    search_router, 
+    prefix="/search", 
+    tags=["search"],
+    dependencies=[Depends(verify_api_key)]  # Require API key for all search endpoints
+)
 
 # For Cloud Run, run the app directly
 if __name__ == "__main__":

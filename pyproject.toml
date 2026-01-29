@@ -1,10 +1,10 @@
 [project]
-name = "substack-newsletters-search-course"
-version = "1.0.0"
-description = "A pipeline to retrieve Newsletters from Substack"
+name = "agents-tool-rag"
+version = "2.0.0"
+description = "AI Agent Tools Search Engine - RAG system for discovering AI frameworks, libraries, and tools"
 readme = "README.md"
 authors = [
-    {name = "Benito Martin"}
+    {name = "Karen Blanco"}
 ]
 license = {text = "MIT License"}
 requires-python = ">=3.12"
@@ -35,6 +35,9 @@ dependencies = [
     "markdownify>=1.2.0",
     "prefect-github>=0.3.1",
     "requests>=2.32.5",
+    "slowapi>=0.1.9",
+    "bleach>=6.1.0",
+    "python-multipart>=0.0.9",
 ]
 
 # [[tool.uv.index]]

@@ -48,5 +48,6 @@ async def readiness_check(request: Request):
         return {"status": "ready"}
     except UnexpectedResponse:
         return {"status": "not ready", "reason": "Qdrant unexpected response"}
-    except Exception as e:
-        return {"status": "not ready", "reason": str(e)}
+    except Exception:
+        # Do not expose exception details to clients (security)
+        return {"status": "not ready", "reason": "Service unavailable"}

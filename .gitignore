@@ -193,6 +193,9 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# macOS
+.DS_Store
+
 # FILES
 MEMORY.md
 DOCKER.md
@@ -214,5 +217,9 @@ src/pipelines/tasks/ingest_archive.py
 src/pipelines/tasks/parse_archive.py
 src/configs/feeds_archive.yaml
 deploy_gradio.sh
-frontend/Dockerfile
-frontend/requirements.txt
+gradio-frontend/Dockerfile
+gradio-frontend/requirements.txt
+frontend/node_modules
+
+# Root package-lock (backend is Python/uv; frontend has its own in frontend/)
+/package-lock.json

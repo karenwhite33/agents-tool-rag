@@ -1,3 +1,5 @@
+import os
+
 from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -6,6 +8,9 @@ from qdrant_client.http.exceptions import UnexpectedResponse
 from src.utils.logger_util import setup_logging
 
 logger = setup_logging()
+
+# Never expose internal details to clients; use ENVIRONMENT=production when deployed
+IS_PRODUCTION = os.getenv("ENVIRONMENT", "development").lower() == "production"
 
 
 async def validation_exception_handler(request: Request, exc: Exception) -> JSONResponse:
@@ -21,22 +26,33 @@ async def validation_exception_handler(request: Request, exc: Exception) -> JSON
     """
     if isinstance(exc, RequestValidationError):
         logger.warning(f"Validation error on {request.url}: {exc.errors()}")
-        return JSONResponse(
-            status_code=422,
-            content={
-                "type": "validation_error",
-                "message": "Invalid request",
-                "details": exc.errors(),
-            },
-        )
+        # In production, don't expose detailed validation errors
+        if IS_PRODUCTION:
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "type": "validation_error",
+                    "message": "Invalid request. Please check your input and try again.",
+                },
+            )
+        else:
+            # In development, show details for debugging
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "type": "validation_error",
+                    "message": "Invalid request",
+                    "details": exc.errors(),
+                },
+            )
 
     logger.exception(f"Unexpected exception on {request.url}: {exc}")
+    # Never expose exception details to client (visible in F12 / Network)
     return JSONResponse(
         status_code=500,
         content={
             "type": "internal_error",
-            "message": "Internal server error",
-            "details": str(exc),
+            "message": "Internal server error. Please try again later.",
         },
     )
 
@@ -54,12 +70,12 @@ async def qdrant_exception_handler(request: Request, exc: Exception) -> JSONResp
     """
     if isinstance(exc, UnexpectedResponse):
         logger.error(f"Qdrant error on {request.url}: {exc}")
+        # Never expose internal error details in production
         return JSONResponse(
             status_code=500,
             content={
                 "type": "qdrant_error",
-                "message": "Vector store error",
-                "details": str(exc),
+                "message": "Vector store error. Please try again later.",
             },
         )
 
@@ -69,8 +85,7 @@ async def qdrant_exception_handler(request: Request, exc: Exception) -> JSONResp
         status_code=500,
         content={
             "type": "internal_error",
-            "message": "Internal server error",
-            "details": str(exc),
+            "message": "Internal server error. Please try again later.",
         },
     )
 
@@ -86,12 +101,14 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
         JSONResponse: A JSON response with status code 500 and error details.
 
     """
+    # Log full exception details server-side
     logger.exception(f"Unhandled exception on {request.url}: {exc}")
+    
+    # Never expose exception details to clients in production
     return JSONResponse(
         status_code=500,
         content={
             "type": "internal_error",
-            "message": "Internal server error",
-            "details": str(exc),
+            "message": "Internal server error. Please try again later.",
         },
     )

@@ -3,7 +3,7 @@ from prefect import flow, unmapped
 from src.config import settings
 from src.infrastructure.supabase.init_session import init_engine
 from src.models.article_models import FeedItem
-from src.models.sql_models import SubstackArticle
+from src.models.sql_models import RSSArticle
 from src.pipelines.tasks.fetch_rss import fetch_rss_entries
 from src.pipelines.tasks.ingest_rss import ingest_from_rss
 from src.utils.logger_util import setup_logging
@@ -16,7 +16,7 @@ from src.utils.logger_util import setup_logging
     retries=2,
     retry_delay_seconds=120,
 )
-def rss_ingest_flow(article_model: type[SubstackArticle] = SubstackArticle) -> None:
+def rss_ingest_flow(article_model: type[RSSArticle] = RSSArticle) -> None:
     """Fetch and ingest articles from configured RSS feeds concurrently.
 
     Each feed is fetched in parallel and ingested into the database
@@ -24,7 +24,7 @@ def rss_ingest_flow(article_model: type[SubstackArticle] = SubstackArticle) -> N
     after completion.
 
     Args:
-        article_model (type[SubstackArticle]): SQLAlchemy model for storing articles.
+        article_model (type[RSSArticle]): SQLAlchemy model for storing articles.
 
     Returns:
         None
@@ -115,4 +115,4 @@ def rss_ingest_flow(article_model: type[SubstackArticle] = SubstackArticle) -> N
 
 
 if __name__ == "__main__":
-    rss_ingest_flow(article_model=SubstackArticle)
+    rss_ingest_flow(article_model=RSSArticle)

@@ -21,11 +21,11 @@ from qdrant_client.http.models import (
     TextIndexType,
     TokenizerType,
 )
-from qdrant_client.models import Batch, Distance, SparseVector, models
+from qdrant_client.models import Batch, Distance, Filter, FieldCondition, MatchValue, SparseVector, models
 from sqlalchemy.orm import Session
 
 from src.config import settings
-from src.models.sql_models import SubstackArticle
+from src.models.sql_models import RSSArticle
 from src.models.vectorstore_models import ArticleChunkPayload
 from src.utils.logger_util import log_batch_status, setup_logging
 from src.utils.text_splitter import TextSplitter
@@ -444,6 +444,156 @@ class AsyncQdrantVectorStore:
             raise
 
     # -----------------------
+    # Upsert chunks (for tools and other data types)
+    # -----------------------
+    async def upsert_chunks(
+        self,
+        payloads: list,
+        dense_vectors: list[list[float]],
+        sparse_vectors: list[SparseVector],
+    ) -> None:
+        """Upsert chunks with embeddings to Qdrant vector store.
+
+        Args:
+            payloads (list): List of payload objects (ArticleChunkPayload, ToolChunkPayload, etc.).
+            dense_vectors (list[list[float]]): List of dense vector embeddings.
+            sparse_vectors (list[SparseVector]): List of sparse vector embeddings.
+
+        Returns:
+            None
+
+        Raises:
+            RuntimeError: If upsert fails.
+            Exception: For unexpected errors.
+
+        """
+        try:
+            # Generate IDs from payload content
+            ids = [
+                str(
+                    uuid.UUID(
+                        hashlib.sha256(
+                            f"{p.url}_{p.chunk_text}".encode()
+                        ).hexdigest()[:32]
+                    )
+                )
+                for p in payloads
+            ]
+
+            # Upsert to Qdrant
+            await self.client.upsert(
+                collection_name=self.collection_name,
+                points=Batch(
+                    ids=ids,  # type: ignore
+                    payloads=[p.dict() for p in payloads],
+                    vectors={"Dense": dense_vectors, "Sparse": sparse_vectors},  # type: ignore
+                ),
+            )
+            self.logger.debug(f"Successfully upserted {len(payloads)} chunks to Qdrant")
+        except Exception as e:
+            self.logger.error(f"Failed to upsert chunks to Qdrant: {e}")
+            raise RuntimeError("Error upserting chunks to Qdrant") from e
+
+    async def get_existing_tool_urls(self) -> dict[str, str]:
+        """Get all existing tool URLs and their content hashes from Qdrant.
+        
+        Computes content hash from chunks to detect if a tool's content has changed.
+        Uses the first chunk's content to compute a hash for the entire tool.
+        
+        Returns:
+            dict[str, str]: Dictionary mapping URL to content hash string.
+        """
+        try:
+            existing_urls: dict[str, str] = {}
+            
+            # Scroll through all points to get unique URLs and compute content hash
+            offset = None
+            url_chunks: dict[str, list[str]] = {}  # Group chunks by URL
+            
+            while True:
+                result = await self.client.scroll(
+                    collection_name=self.collection_name,
+                    limit=1000,
+                    offset=offset,
+                    with_payload=True,
+                    with_vectors=False,
+                )
+                
+                if not result[0]:  # No more points
+                    break
+                
+                for point in result[0]:
+                    payload = point.payload or {}
+                    url = payload.get("url")
+                    chunk_text = payload.get("chunk_text", "")
+                    
+                    if url:
+                        if url not in url_chunks:
+                            url_chunks[url] = []
+                        url_chunks[url].append(chunk_text)
+                
+                offset = result[1]  # Next offset
+                if offset is None:
+                    break
+            
+            # Compute content hash for each URL by combining all chunks
+            # We sort chunks to ensure consistent hashing regardless of chunk order
+            for url, chunks in url_chunks.items():
+                # Combine all chunk text to create a hash
+                # Sort for consistency (chunks might be retrieved in different order)
+                combined_content = "".join(sorted(chunks))
+                content_hash = hashlib.sha256(combined_content.encode()).hexdigest()[:16]
+                existing_urls[url] = content_hash
+            
+            self.logger.info(f"Found {len(existing_urls)} unique tool URLs in Qdrant")
+            return existing_urls
+            
+        except Exception as e:
+            self.logger.error(f"Failed to get existing tool URLs: {e}")
+            raise RuntimeError("Error querying existing tool URLs") from e
+
+    async def delete_chunks_by_url(self, url: str) -> int:
+        """Delete all chunks for a specific tool URL.
+        
+        Args:
+            url (str): The URL of the tool whose chunks should be deleted.
+            
+        Returns:
+            int: Number of chunks deleted.
+        """
+        try:
+            # Find all point IDs for this URL
+            result = await self.client.scroll(
+                collection_name=self.collection_name,
+                scroll_filter=Filter(
+                    must=[FieldCondition(key="url", match=MatchValue(value=url))]
+                ),
+                limit=10000,  # Adjust if you have more chunks per tool
+                with_payload=False,
+                with_vectors=False,
+            )
+            
+            if not result[0]:
+                return 0
+            
+            point_ids = [point.id for point in result[0]]
+            
+            # Delete the points
+            await self.client.delete(
+                collection_name=self.collection_name,
+                points_selector=models.PointIdsList(
+                    points=point_ids  # type: ignore
+                ),
+            )
+            
+            self.logger.info(f"Deleted {len(point_ids)} chunks for URL: {url}")
+            return len(point_ids)
+            
+        except Exception as e:
+            self.logger.error(f"Failed to delete chunks for URL {url}: {e}")
+            raise RuntimeError(f"Error deleting chunks for URL {url}") from e
+
+    # -----------------------
     # Embedding helpers (memory-efficient)
     # -----------------------
     # async def embed_batch_async(
@@ -521,7 +671,7 @@ class AsyncQdrantVectorStore:
 
     async def _article_batch_generator(
         self, session: Session, from_date: datetime | None = None
-    ) -> AsyncGenerator[list[SubstackArticle], None]:
+    ) -> AsyncGenerator[list[RSSArticle], None]:
         """Yield batches of articles from SQL database.
 
         Args:
@@ -529,7 +679,7 @@ class AsyncQdrantVectorStore:
             from_date (datetime, optional): Filter articles from this date.
 
         Yields:
-            list[SubstackArticle]: Batch of articles.
+            list[RSSArticle]: Batch of articles.
 
         Raises:
             Exception: If database query fails.
@@ -541,9 +691,9 @@ class AsyncQdrantVectorStore:
         try:
             offset = 0
             while True:
-                query = session.query(SubstackArticle).order_by(SubstackArticle.published_at)
+                query = session.query(RSSArticle).order_by(RSSArticle.published_at)
                 if from_date:
-                    query = query.filter(SubstackArticle.published_at >= from_date)
+                    query = query.filter(RSSArticle.published_at >= from_date)
                 articles = query.offset(offset).limit(self.article_batch_size).all()
                 if not articles:
                     break
