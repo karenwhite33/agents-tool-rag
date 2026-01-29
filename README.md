@@ -35,6 +35,9 @@ The AI Agent Tools Search Engine aggregates, indexes, and provides semantic sear
 2. **GitHub Repositories** - Popular AI agent frameworks with metadata (stars, language, features)
 3. **Documentation Sites** - Official documentation from frameworks like LangChain, CrewAI, etc.
 
+<img width="1293" height="987" alt="react_app" src="https://github.com/user-attachments/assets/b2bd75eb-c9b0-49c7-a683-f20c7354cebe" />
+
+
 ### Why Use This?
 
 - **Unified Search**: Search across GitHub repos, articles, and documentation in one place
@@ -74,6 +77,7 @@ The AI Agent Tools Search Engine aggregates, indexes, and provides semantic sear
 ---
 
 ## 🏗️ Architecture
+<img width="1536" height="1024" alt="app_diagram" src="https://github.com/user-attachments/assets/29591fb2-c8ca-43b0-a7fd-af3f313e3337" />
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
